@@ -1,0 +1,96 @@
+/* Fondo y estructura general */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('ruta/a/tu/imagen.jpg'); /* Ruta de la imagen de fondo */
+    background-size: cover; /* Hace que la imagen cubra toda la pantalla */
+    background-position: center center; /* Centra la imagen */
+    background-attachment: fixed; /* Hace que la imagen se mantenga fija cuando se hace scroll */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+}
+
+/* Encabezado */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #478a71; /* Fondo verde sólido para el encabezado */
+    color: white;
+    padding: 20px;
+}
+
+.header-box {
+    display: flex;
+    align-items: center;
+}
+
+.header-logo {
+    width: 125px;
+    margin-right: 30px;
+}
+
+header h1 {
+    font-size: 36px;
+    margin: 0;
+}
+
+/* Contenedor principal */
+.main-container {
+    padding: 20px;
+}
+
+/* Estilos de la tabla para mostrar pedidos */
+.pedidos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.pedidos-table th,
+.pedidos-table td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+.pedidos-table th {
+    background-color: #f2f2f2;
+}
+
+.pedidos-table td {
+    background-color: white;
+}
+
+/* Estilo del botón de regreso */
+.button-container {
+    text-align: center;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #478a71;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.back-button:hover {
+    background-color: #45a049;
+}
+
+/* Estilo del botón de acciones */
+.action-button {
+    padding: 8px 16px;
+    background-color: #428bca; /* Azul para las acciones */
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.action-button:hover {
+    background-color: #357ebd;
+}
+
