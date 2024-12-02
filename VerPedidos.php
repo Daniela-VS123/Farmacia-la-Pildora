@@ -14,7 +14,7 @@ if (!$conexion) {
 }
 
 // Obtener los pedidos
-$sqlPedidos = "SELECT p.idPedido, p.FechaPedido, p.Estado, p.idDetallePedido 
+$sqlPedidos = "SELECT p.idPedido, p.FechaPedido, p.Estado 
                FROM Pedidos p
                ORDER BY p.FechaPedido DESC";
 $resultPedidos = mysqli_query($conexion, $sqlPedidos);
@@ -25,13 +25,13 @@ if (mysqli_num_rows($resultPedidos) > 0) {
     $pedidos = [];
     while ($pedido = mysqli_fetch_assoc($resultPedidos)) {
         // Para cada pedido, obtener sus detalles
-        $idDetallePedido = $pedido['idDetallePedido'];  // Usamos idDetallePedido
+        $idPedido = $pedido['idPedido'];  // Usamos idPedido
 
-        // Obtener los detalles del pedido usando idDetallePedido
+        // Obtener los detalles del pedido usando idPedido
         $sqlDetalles = "SELECT dp.idProducto, dp.Cantidad, dp.Precio, m.Nombre AS ProductoNombre
                         FROM DetallePedidos dp
                         JOIN Medicamentos m ON dp.idProducto = m.idProducto
-                        WHERE dp.idDetallePedido = '$idDetallePedido'";  // Relacionamos con idDetallePedido
+                        WHERE dp.idPedido = '$idPedido'";  // Relacionamos con idPedido
         $resultDetalles = mysqli_query($conexion, $sqlDetalles);
 
         $detalles = [];
@@ -59,7 +59,7 @@ mysqli_close($conexion);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ver Pedidos - Sistema de Farmacia</title>
-    <link rel="stylesheet" href="MosPedidos.css"> <!-- Archivo CSS para estilos -->
+    <link rel="stylesheet" href="VerPedidos.css"> <!-- Archivo CSS para estilos -->
 </head>
 <body>
     <header class="header">
@@ -85,30 +85,40 @@ mysqli_close($conexion);
             <tbody>
                 <?php if (count($pedidos) > 0): ?>
                     <?php foreach ($pedidos as $pedido): ?>
-                        <?php
-                        $totalPedido = 0; // Inicializamos el total del pedido
-                        $productos = '';
-                        $cantidades = '';
-                        $precios = '';
-                        $totalProductos = '';
-
-                        // Iteramos sobre los detalles del pedido
-                        foreach ($pedido['detalles'] as $detalle) {
-                            $productos .= $detalle['ProductoNombre'] . "<br>";
-                            $cantidades .= $detalle['Cantidad'] . "<br>";
-                            $precios .= number_format($detalle['Precio'], 2) . " MXN<br>";
-                            $totalProductos .= number_format($detalle['Cantidad'] * $detalle['Precio'], 2) . " MXN<br>";
-                            $totalPedido += $detalle['Cantidad'] * $detalle['Precio'];
-                        }
-                        ?>
                         <tr>
                             <td><?= $pedido['idPedido'] ?></td>
                             <td><?= $pedido['FechaPedido'] ?></td>
                             <td><?= $pedido['Estado'] ?></td>
-                            <td><?= $productos ?></td>
-                            <td><?= $cantidades ?></td>
-                            <td><?= $precios ?></td>
-                            <td><?= number_format($totalPedido, 2) ?> MXN</td>
+                            <td>
+                                <?php 
+                                foreach ($pedido['detalles'] as $detalle) {
+                                    echo $detalle['ProductoNombre'] . "<br>";
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php 
+                                foreach ($pedido['detalles'] as $detalle) {
+                                    echo $detalle['Cantidad'] . "<br>";
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php 
+                                foreach ($pedido['detalles'] as $detalle) {
+                                    echo number_format($detalle['Precio'], 2) . " MXN<br>";
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?php 
+                                $totalPedido = 0;
+                                foreach ($pedido['detalles'] as $detalle) {
+                                    $totalPedido += $detalle['Cantidad'] * $detalle['Precio'];
+                                }
+                                echo number_format($totalPedido, 2) . " MXN"; 
+                                ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -118,9 +128,17 @@ mysqli_close($conexion);
                 <?php endif; ?>
             </tbody>
         </table>
+        <tr>-
+            
+    <td colspan="7" class="button-container">
+        <a href="Sistema-farmacia.html" class="back-button">Regresar al Menú Principal</a>
+    </td>
+</tr>
+
     </main>
 </body>
 </html>
+
 
 
 

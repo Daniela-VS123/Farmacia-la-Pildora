@@ -1,49 +1,43 @@
 <?php
-session_start();
-
-// Configuración de la base de datos
-$server = "localhost";
-$user = "root";
-$pass = "clave";
-$db = "Farmacia";
-
-// Crear conexión
-$conexion = mysqli_connect($server, $user, $pass, $db);
-
-// Verificar conexión
-if (!$conexion) {
-    die("Conexión fallida: " . mysqli_connect_error());
-}
-
-// Obtener datos del formulario
+// Verifica si el formulario ha sido enviado
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nombre = $_POST['Nombre'];
-    $password = $_POST['password'];
+    // Configuración de la base de datos
+    $server = "localhost";
+    $user = "root";
+    $pass = "clave";
+    $db = "Farmacia";
 
-    // Preparar la consulta SQL
-    $stmt = $conexion->prepare("SELECT nuevaPassword FROM Empleados WHERE Nombre = ?");
-    $stmt->bind_param("s", $nombre);
-    $stmt->execute();
-    $stmt->store_result();
+    // Crear conexión
+    $conexion = mysqli_connect($server, $user, $pass, $db);
 
-    if ($stmt->num_rows > 0) {
-        $stmt->bind_result($hashedPassword);
-        $stmt->fetch();
+    // Verificar conexión
+    if ($conexion->connect_errno) {
+        die("Conexión fallida: " . $conexion->connect_error);
+    }
 
-        // Verificar la contraseña
-        if (password_verify($password, $hashedPassword)) {
-            $_SESSION['Nombre'] = $nombre;
-            header("Location: Sistema-farmacia.html"); // Redirigir al sistema
+    // Verificar si los campos están establecidos
+    if (isset($_POST["Nombre"]) && isset($_POST["Clave"])) {
+        $usuario = $_POST["Nombre"];
+        $clave = $_POST["Clave"];
+
+        // Consulta para verificar el usuario y la contraseña
+        $sql = $conexion->prepare("SELECT * FROM Empleados WHERE Nombre=? AND nuevaPassword=?");
+        $sql->bind_param("ss", $usuario, $clave);
+        $sql->execute();
+        $result = $sql->get_result();
+
+        // Verificar si se encontró un usuario
+        if ($result->num_rows > 0) {
+            // Página a la que se quiere redirigir
+            header("Location: Sistema-farmacia.html");
             exit();
         } else {
-            echo "Contraseña incorrecta.";
+            // Mensaje para cuando el usuario o la contraseña no son correctos
+            echo "El nombre o contraseña son incorrectos.";
         }
-    } else {
-        echo "Usuario no encontrado.";
-    }
-    $stmt->close();
-}
 
-// Cerrar la conexión
-mysqli_close($conexion);
+        // Cerrar la conexión
+        $conexion->close();
+    }
+}
 ?>

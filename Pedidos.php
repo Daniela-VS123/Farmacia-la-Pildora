@@ -64,25 +64,29 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $idPedido = mysqli_insert_id($conexion);
 
             // Insertar los detalles del pedido (productos y cantidades) en la tabla DetallePedidos
-            for ($i = 0; $i < count($productosSeleccionados); $i++) {
-                $producto = $productosSeleccionados[$i];
-                $cantidad = $cantidades[$i];
-                $precio = $precios[$i];
-                $totalProducto = $totalProductos[$i];
+            $sqlDetallePedido = "INSERT INTO DetallePedidos (idPedido, idProducto, Cantidad, Precio) VALUES (?, ?, ?, ?)";
+            $stmtDetallePedido = mysqli_prepare($conexion, $sqlDetallePedido);
 
-                // Insertar cada producto en la tabla DetallePedidos con el idPedido
-                $sqlDetallePedido = "INSERT INTO DetallePedidos (idPedido, idProducto, Cantidad, Precio) 
-                                     VALUES ('$idPedido', '$producto', '$cantidad', '$precio')";
-                if (mysqli_query($conexion, $sqlDetallePedido)) {
-                    // Todo correcto, puedes continuar con el siguiente producto
-                } else {
-                    echo "Error al insertar detalle del pedido: " . mysqli_error($conexion);
+            if ($stmtDetallePedido) {
+                // Iterar a través de los productos seleccionados
+                for ($i = 0; $i < count($productosSeleccionados); $i++) {
+                    $producto = $productosSeleccionados[$i];
+                    $cantidad = $cantidades[$i];
+                    $precio = $precios[$i];
+
+                    // Insertar cada producto en la tabla DetallePedidos
+                    mysqli_stmt_bind_param($stmtDetallePedido, "iiid", $idPedido, $producto, $cantidad, $precio);
+                    if (!mysqli_stmt_execute($stmtDetallePedido)) {
+                        echo "Error al insertar detalle del pedido: " . mysqli_error($conexion);
+                    }
                 }
-            }
 
-            // Redireccionar a la página verPedidos.php después de realizar el pedido
-            header("Location: VerPedidos.php");
-            exit; // Asegura que el script se detenga aquí
+                // Redireccionar a la página verPedidos.php después de realizar el pedido
+                header("Location: VerPedidos.php");
+                exit; // Asegura que el script se detenga aquí
+            } else {
+                echo "Error al preparar la consulta para el detalle del pedido: " . mysqli_error($conexion);
+            }
         } else {
             echo "Error al realizar el pedido: " . mysqli_error($conexion);
         }
@@ -234,5 +238,3 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </script>
 </body>
 </html>
-
-

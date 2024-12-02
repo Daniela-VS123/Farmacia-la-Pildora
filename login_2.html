@@ -12,7 +12,7 @@
     <header class="header">
         <div class="header-box">
             <img src="logo farmacia.png" alt="Logo de la Farmacia" class="header-logo">
-            <h1>Farmacia la Pildora</h1>
+            <h1>Farmacia La Píldora</h1>
         </div>
     </header>
 
@@ -20,16 +20,18 @@
     <main class="login-container">
         <div class="login-box">
             <img src="Usuario.png" alt="Imagen de Login" class="login-image">
-            <form action="/login" method="POST">
+            <!-- El formulario envía datos a login.php -->
+            <form action="login.php" method="POST">
                 <div class="input-group">
-                    <label for="usuario">Usuario</label>
-                    <input type="text" id="usuario" name="usuario" required>
+                    <label for="Nombre">Usuario</label>
+                    <input type="text" id="Nombre" name="Nombre" required>
                 </div>
                 <div class="input-group">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="Clave">Contraseña</label>
+                    <input type="password" id="Clave" name="Clave" required>
                 </div>
-                <button type="button" onclick="window.location.href='Sistema-farmacia.html'">Iniciar Sesión</button>
+                <button type="submit" name="Boton">Iniciar Sesión</button>
+                <!-- Enlace para registrar nuevo usuario -->
                 <p class="register-link"><a href="Empleados.html">Registrar Nuevo Usuario</a></p>
             </form>
         </div>
@@ -37,3 +39,4 @@
 
 </body>
 </html>
+

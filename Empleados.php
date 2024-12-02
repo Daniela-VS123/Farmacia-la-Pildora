@@ -48,12 +48,17 @@ $salario = (float)$salario;
 // Hash de la nueva contraseña
 $nuevaPasswordHash = password_hash($nuevaPassword, PASSWORD_DEFAULT);
 
+// Verificar si el hash se generó correctamente
+if (empty($nuevaPasswordHash)) {
+    die("Error: El hash de la contraseña no se generó correctamente.");
+}
+
 // Preparar la consulta SQL usando declaraciones preparadas
 $stmt = $conexion->prepare("INSERT INTO Empleados (Nombre, Puesto, Correo, Telefono, CURP, RFC, Salario, nuevaPassword) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
 
 if ($stmt) {
     // Vincular parámetros
-    $stmt->bind_param('ssssssds', $nombre, $puesto, $correo, $telefono, $curp, $rfc, $salario, $nuevaPasswordHash);
+    $stmt->bind_param('ssssssds', $nombre, $puesto, $correo, $telefono, $curp, $rfc, $salario, $nuevaPassword);
     
     // Ejecutar la consulta
     if ($stmt->execute()) {
